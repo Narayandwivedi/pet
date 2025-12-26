@@ -90,20 +90,6 @@ const Navbar = () => {
           </div>
         </div>
 
-        {/* Mobile Search */}
-        <div className="md:hidden pb-4">
-          <div className="flex items-center bg-gray-100 rounded-full px-4 py-2">
-            <Search className="w-5 h-5 text-gray-500" />
-            <input
-              type="text"
-              placeholder="Search for products..."
-              value={searchQuery}
-              onChange={(e) => setSearchQuery(e.target.value)}
-              className="bg-transparent outline-none ml-2 w-full text-sm"
-            />
-          </div>
-        </div>
-
         {/* Mobile Menu */}
         {isMenuOpen && (
           <div className="lg:hidden pb-4 border-t">

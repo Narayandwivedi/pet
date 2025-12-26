@@ -1,31 +1,36 @@
 import { useState, useEffect } from 'react';
-import { ChevronLeft, ChevronRight } from 'lucide-react';
+import { ChevronLeft, ChevronRight, Search } from 'lucide-react';
 import { Link } from 'react-router-dom';
 
 const Hero = () => {
   const [currentSlide, setCurrentSlide] = useState(0);
+  const [touchStart, setTouchStart] = useState(0);
+  const [touchEnd, setTouchEnd] = useState(0);
 
   const slides = [
     {
       id: 1,
-      title: 'Premium Pet Food',
-      subtitle: 'Nutritious meals for your furry friends',
       bgColor: 'bg-gradient-to-r from-orange-400 to-orange-600',
-      cta: 'Shop Now',
+      image: '/hero.webp',
+      mobileImage: '/hero mobile.webp',
     },
     {
       id: 2,
-      title: 'Toys & Accessories',
-      subtitle: 'Keep your pets happy and active',
       bgColor: 'bg-gradient-to-r from-blue-400 to-blue-600',
-      cta: 'Explore',
+      image: '/hero2.webp',
+      mobileImage: '/hero2 mobile.webp',
     },
     {
       id: 3,
-      title: 'Grooming Essentials',
-      subtitle: 'Everything for pet care and hygiene',
       bgColor: 'bg-gradient-to-r from-purple-400 to-purple-600',
-      cta: 'Discover',
+      image: '/hero3.webp',
+      mobileImage: '/hero3 mobile.webp',
+    },
+    {
+      id: 4,
+      bgColor: 'bg-gradient-to-r from-pink-400 to-pink-600',
+      image: '/hero4.webp',
+      mobileImage: '/hero4 mobile.webp',
     },
   ];
 
@@ -55,10 +60,53 @@ const Hero = () => {
     setCurrentSlide((prev) => (prev - 1 + slides.length) % slides.length);
   };
 
+  const handleTouchStart = (e) => {
+    setTouchStart(e.targetTouches[0].clientX);
+  };
+
+  const handleTouchMove = (e) => {
+    setTouchEnd(e.targetTouches[0].clientX);
+  };
+
+  const handleTouchEnd = () => {
+    if (!touchStart || !touchEnd) return;
+
+    const distance = touchStart - touchEnd;
+    const minSwipeDistance = 50;
+
+    if (distance > minSwipeDistance) {
+      nextSlide();
+    }
+
+    if (distance < -minSwipeDistance) {
+      prevSlide();
+    }
+
+    setTouchStart(0);
+    setTouchEnd(0);
+  };
+
   return (
     <div className="relative w-full mb-20 md:mb-24">
+      {/* Mobile Search Bar - Overlaid on Hero */}
+      <div className="md:hidden absolute top-4 left-4 right-4 z-30">
+        <div className="flex items-center bg-white rounded-full px-4 py-3 shadow-lg">
+          <Search className="w-5 h-5 text-gray-500" />
+          <input
+            type="text"
+            placeholder="Search for products..."
+            className="bg-transparent outline-none ml-2 w-full text-sm"
+          />
+        </div>
+      </div>
+
       {/* Hero Slider */}
-      <div className="relative w-full h-[280px] md:h-[380px] overflow-hidden">
+      <div
+        className="relative w-full h-[350px] md:h-[400px] overflow-hidden"
+        onTouchStart={handleTouchStart}
+        onTouchMove={handleTouchMove}
+        onTouchEnd={handleTouchEnd}
+      >
         {slides.map((slide, index) => (
           <div
             key={slide.id}
@@ -66,29 +114,49 @@ const Hero = () => {
               index === currentSlide ? 'translate-x-0' : index < currentSlide ? '-translate-x-full' : 'translate-x-full'
             }`}
           >
-            <div className={`w-full h-full ${slide.bgColor} flex items-center justify-center`}>
-              <div className="text-center text-white px-4">
-                <h1 className="text-3xl md:text-5xl font-bold mb-3">{slide.title}</h1>
-                <p className="text-lg md:text-xl mb-6">{slide.subtitle}</p>
-                <button className="bg-white text-gray-800 px-6 py-2.5 md:px-8 md:py-3 rounded-full font-semibold hover:bg-gray-100 transition-colors">
-                  {slide.cta}
-                </button>
-              </div>
+            <div className="w-full h-full relative flex items-center justify-center">
+              {slide.image ? (
+                <>
+                  {/* Mobile Image */}
+                  <img
+                    src={slide.mobileImage}
+                    alt="Hero slide"
+                    className="absolute w-full h-full object-cover object-center md:hidden"
+                  />
+                  {/* Desktop Image */}
+                  <img
+                    src={slide.image}
+                    alt="Hero slide"
+                    className="absolute w-full h-full object-cover object-center hidden md:block"
+                  />
+                </>
+              ) : (
+                <>
+                  <div className={`absolute w-full h-full ${slide.bgColor}`}></div>
+                  <div className="relative text-center text-white px-4 z-10">
+                    <h1 className="text-3xl md:text-5xl font-bold mb-3">{slide.title}</h1>
+                    <p className="text-lg md:text-xl mb-6">{slide.subtitle}</p>
+                    <button className="bg-white text-gray-800 px-6 py-2.5 md:px-8 md:py-3 rounded-full font-semibold hover:bg-gray-100 transition-colors">
+                      {slide.cta}
+                    </button>
+                  </div>
+                </>
+              )}
             </div>
           </div>
         ))}
 
-        {/* Navigation Arrows */}
+        {/* Navigation Arrows - Desktop only */}
         <button
           onClick={prevSlide}
-          className="absolute left-4 top-1/2 -translate-y-1/2 bg-white/80 hover:bg-white p-2 rounded-full shadow-lg transition-all"
+          className="hidden md:block absolute left-4 top-1/2 -translate-y-1/2 bg-white/80 hover:bg-white p-2 rounded-full shadow-lg transition-all"
           aria-label="Previous slide"
         >
           <ChevronLeft className="w-6 h-6 text-gray-800" />
         </button>
         <button
           onClick={nextSlide}
-          className="absolute right-4 top-1/2 -translate-y-1/2 bg-white/80 hover:bg-white p-2 rounded-full shadow-lg transition-all"
+          className="hidden md:block absolute right-4 top-1/2 -translate-y-1/2 bg-white/80 hover:bg-white p-2 rounded-full shadow-lg transition-all"
           aria-label="Next slide"
         >
           <ChevronRight className="w-6 h-6 text-gray-800" />
