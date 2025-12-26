@@ -1,9 +1,10 @@
 import Hero from '../components/Hero';
 import { ShoppingBag, Truck, Shield, Headphones } from 'lucide-react';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 
 const Home = () => {
   const [activeTab, setActiveTab] = useState('under799');
+  const [currentProductSlide, setCurrentProductSlide] = useState(0);
   const categories = [
     { name: 'Dog Food', image: '🐕', color: 'bg-orange-100' },
     { name: 'Cat Food', image: '🐈', color: 'bg-blue-100' },
@@ -99,6 +100,14 @@ const Home = () => {
     ],
   };
 
+  // Auto-slide for featured products on mobile
+  useEffect(() => {
+    const timer = setInterval(() => {
+      setCurrentProductSlide((prev) => (prev + 1) % featuredProducts.length);
+    }, 3000);
+    return () => clearInterval(timer);
+  }, [featuredProducts.length]);
+
   return (
     <div className="min-h-screen bg-gray-50">
       {/* Hero Section */}
@@ -144,7 +153,64 @@ const Home = () => {
             <h2 className="text-xl md:text-3xl font-bold text-gray-800">Featured Products</h2>
             <button className="text-sm md:text-base text-orange-500 hover:text-orange-600 font-semibold">View All →</button>
           </div>
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 md:gap-6">
+
+          {/* Mobile: Slider with 2 products visible + peek of 3rd */}
+          <div className="md:hidden relative overflow-hidden">
+            <div
+              className="flex transition-transform duration-500 ease-in-out gap-3"
+              style={{ transform: `translateX(-${currentProductSlide * 47}%)` }}
+            >
+              {featuredProducts.map((product) => (
+                <div
+                  key={product.id}
+                  className="bg-white border border-gray-200 rounded-lg overflow-hidden hover:shadow-xl transition-shadow cursor-pointer group min-w-[45%] flex-shrink-0"
+                >
+                  <div className="relative bg-gray-100 h-32 flex items-center justify-center">
+                    <div className="text-4xl">{product.image}</div>
+                    {product.discount && (
+                      <span className="absolute top-2 right-2 bg-orange-500 text-white text-xs font-bold px-2 py-1 rounded">
+                        {product.discount}
+                      </span>
+                    )}
+                  </div>
+                  <div className="p-3">
+                    <h3 className="text-sm font-semibold text-gray-800 mb-2 group-hover:text-orange-500 transition-colors">
+                      {product.name}
+                    </h3>
+                    <div className="flex items-center mb-2">
+                      <span className="text-yellow-400 text-sm">★</span>
+                      <span className="text-xs text-gray-600 ml-1">{product.rating}</span>
+                    </div>
+                    <div className="flex items-center justify-between mb-2">
+                      <div>
+                        <span className="text-base font-bold text-gray-800">{product.price}</span>
+                        <span className="text-xs text-gray-400 line-through ml-1">{product.originalPrice}</span>
+                      </div>
+                    </div>
+                    <button className="w-full bg-orange-500 text-white text-xs py-2 rounded-lg hover:bg-orange-600 transition-colors">
+                      Add to Cart
+                    </button>
+                  </div>
+                </div>
+              ))}
+            </div>
+            {/* Dots Indicator */}
+            <div className="flex justify-center mt-4 gap-2">
+              {featuredProducts.map((_, index) => (
+                <button
+                  key={index}
+                  onClick={() => setCurrentProductSlide(index)}
+                  className={`w-2 h-2 rounded-full transition-all ${
+                    index === currentProductSlide ? 'bg-orange-500 w-6' : 'bg-gray-300'
+                  }`}
+                  aria-label={`Go to product ${index + 1}`}
+                />
+              ))}
+            </div>
+          </div>
+
+          {/* Desktop: Grid layout */}
+          <div className="hidden md:grid md:grid-cols-2 lg:grid-cols-4 gap-4 md:gap-6">
             {featuredProducts.map((product) => (
               <div
                 key={product.id}
@@ -242,25 +308,33 @@ const Home = () => {
       <section className="py-8 md:py-12 bg-white">
         <div className="container mx-auto px-4">
           <h2 className="text-xl md:text-3xl font-bold text-center mb-4 md:mb-8 text-gray-800">Popular Brands</h2>
-          {/* Mobile: Scrollable Row */}
-          <div className="flex lg:hidden overflow-x-auto gap-3 md:gap-4 pb-4 scrollbar-hide">
-            {['Pedigree', 'Whiskas', 'Royal Canin', 'Drools', 'Purepet', 'Sheba'].map((brand, index) => (
+          {/* Mobile: Scrollable Row - 3 brands visible + 25% of 4th */}
+          <div className="flex lg:hidden overflow-x-auto gap-1 pb-4 scrollbar-hide snap-x snap-mandatory -mx-4 px-4">
+            {['/brand1.avif', '/brand2.avif', '/brand3.avif', '/brand4.avif', '/brand5.avif', '/brand6.avif'].map((brand, index) => (
               <div
                 key={index}
-                className="bg-gray-50 border border-gray-200 rounded-lg p-4 md:p-6 flex items-center justify-center hover:shadow-lg transition-shadow cursor-pointer flex-shrink-0 min-w-[120px] md:min-w-[150px]"
+                className="flex-shrink-0 w-[31%] snap-start"
               >
-                <span className="text-sm md:text-base font-semibold text-gray-700">{brand}</span>
+                <img
+                  src={brand}
+                  alt={`Brand ${index + 1}`}
+                  className="w-full h-24 object-contain cursor-pointer hover:scale-105 transition-transform"
+                />
               </div>
             ))}
           </div>
-          {/* Desktop: Grid Layout */}
-          <div className="hidden lg:grid lg:grid-cols-6 gap-6">
-            {['Pedigree', 'Whiskas', 'Royal Canin', 'Drools', 'Purepet', 'Sheba'].map((brand, index) => (
+          {/* Desktop: Grid Layout - 6 brands in a row */}
+          <div className="hidden lg:grid lg:grid-cols-6 gap-4">
+            {['/brand1.avif', '/brand2.avif', '/brand3.avif', '/brand4.avif', '/brand5.avif', '/brand6.avif'].map((brand, index) => (
               <div
                 key={index}
-                className="bg-gray-50 border border-gray-200 rounded-lg p-6 flex items-center justify-center hover:shadow-lg transition-shadow cursor-pointer"
+                className="flex items-center justify-center"
               >
-                <span className="text-base font-semibold text-gray-700">{brand}</span>
+                <img
+                  src={brand}
+                  alt={`Brand ${index + 1}`}
+                  className="w-full h-32 object-contain cursor-pointer hover:scale-105 transition-transform"
+                />
               </div>
             ))}
           </div>
