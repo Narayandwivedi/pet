@@ -102,7 +102,7 @@ const Hero = () => {
 
       {/* Hero Slider */}
       <div
-        className="relative w-full h-[350px] md:h-[400px] overflow-hidden"
+        className="relative w-full h-[315px] md:h-[360px] overflow-hidden"
         onTouchStart={handleTouchStart}
         onTouchMove={handleTouchMove}
         onTouchEnd={handleTouchEnd}
