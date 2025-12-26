@@ -35,14 +35,14 @@ const Hero = () => {
   ];
 
   const quickCategories = [
-    { name: 'Dogs', icon: '🐕', path: '/dogs' },
-    { name: 'Cats', icon: '🐈', path: '/cats' },
-    { name: 'Food', icon: '🍖', path: '/food' },
-    { name: 'Toys', icon: '🎾', path: '/toys' },
-    { name: 'Treats', icon: '🦴', path: '/treats' },
-    { name: 'Grooming', icon: '✂️', path: '/grooming' },
-    { name: 'Health', icon: '💊', path: '/health' },
-    { name: 'Beds', icon: '🛏️', path: '/beds' },
+    { name: 'Dogs', icon: '🐕', path: '/dogs', gradient: 'from-orange-100 via-orange-50 to-white' },
+    { name: 'Cats', icon: '🐈', path: '/cats', gradient: 'from-blue-100 via-blue-50 to-white' },
+    { name: 'Food', icon: '🍖', path: '/food', gradient: 'from-green-100 via-green-50 to-white' },
+    { name: 'Toys', icon: '🎾', path: '/toys', gradient: 'from-pink-100 via-pink-50 to-white' },
+    { name: 'Treats', icon: '🦴', path: '/treats', gradient: 'from-yellow-100 via-yellow-50 to-white' },
+    { name: 'Grooming', icon: '✂️', path: '/grooming', gradient: 'from-purple-100 via-purple-50 to-white' },
+    { name: 'Health', icon: '💊', path: '/health', gradient: 'from-red-100 via-red-50 to-white' },
+    { name: 'Beds', icon: '🛏️', path: '/beds', gradient: 'from-indigo-100 via-indigo-50 to-white' },
   ];
 
   useEffect(() => {
@@ -87,7 +87,7 @@ const Hero = () => {
   };
 
   return (
-    <div className="relative w-full mb-20 md:mb-24">
+    <div className="relative w-full mb-16 md:mb-20">
       {/* Mobile Search Bar - Overlaid on Hero */}
       <div className="md:hidden absolute top-4 left-4 right-4 z-30">
         <div className="flex items-center bg-white rounded-full px-4 py-3 shadow-lg">
@@ -178,20 +178,20 @@ const Hero = () => {
       </div>
 
       {/* Overlay Category Cards - 20% inside, 80% outside */}
-      <div className="absolute -bottom-16 md:-bottom-20 left-0 right-0 z-20 px-4">
+      <div className="absolute -bottom-12 md:-bottom-16 left-0 right-0 z-20 px-4">
         <div className="container mx-auto">
-          {/* Mobile: Scrollable horizontal */}
-          <div className="flex md:hidden overflow-x-auto gap-3 pb-2 scrollbar-hide snap-x snap-mandatory">
+          {/* Mobile: Scrollable horizontal - 4 full cards + 25% of 5th */}
+          <div className="flex md:hidden overflow-x-auto gap-2 pb-2 scrollbar-hide snap-x snap-mandatory">
             {quickCategories.map((category, index) => (
               <Link
                 key={index}
                 to={category.path}
-                className="bg-gradient-to-br from-white to-gray-50 rounded-lg shadow-lg hover:shadow-xl transition-all group p-4 flex flex-col items-center justify-center border border-gray-100 min-w-[100px] h-[100px] snap-start"
+                className={`bg-gradient-to-br ${category.gradient} rounded-xl shadow-md hover:shadow-2xl transition-all duration-300 group p-2 flex flex-col items-center justify-center border border-white/50 min-w-[23%] h-[65px] snap-start flex-shrink-0 backdrop-blur-sm`}
               >
-                <div className="text-2xl mb-1.5 group-hover:scale-110 transition-transform">
+                <div className="text-lg mb-0.5 group-hover:scale-125 transition-transform duration-300">
                   {category.icon}
                 </div>
-                <span className="text-xs font-semibold text-gray-700 group-hover:text-orange-500 transition-colors text-center">
+                <span className="text-[9px] font-bold text-gray-800 group-hover:text-orange-600 transition-colors text-center">
                   {category.name}
                 </span>
               </Link>
@@ -199,17 +199,17 @@ const Hero = () => {
           </div>
 
           {/* Desktop: Grid with 8 columns - all cards in one row */}
-          <div className="hidden md:grid md:grid-cols-8 gap-8">
+          <div className="hidden md:grid md:grid-cols-8 gap-6">
             {quickCategories.map((category, index) => (
               <Link
                 key={index}
                 to={category.path}
-                className="bg-gradient-to-br from-white to-gray-50 rounded-lg shadow-lg hover:shadow-xl transition-all group p-3 flex flex-col items-center justify-center border border-gray-100 h-[130px] max-w-[117px] mx-auto w-full"
+                className={`bg-gradient-to-br ${category.gradient} rounded-xl shadow-md hover:shadow-2xl transition-all duration-300 group p-2 flex flex-col items-center justify-center border border-white/50 h-[90px] max-w-[100px] mx-auto w-full backdrop-blur-sm`}
               >
-                <div className="text-3xl mb-2 group-hover:scale-110 transition-transform">
+                <div className="text-xl mb-1 group-hover:scale-125 transition-transform duration-300">
                   {category.icon}
                 </div>
-                <span className="text-xs font-semibold text-gray-700 group-hover:text-orange-500 transition-colors text-center leading-tight">
+                <span className="text-[9px] font-bold text-gray-800 group-hover:text-orange-600 transition-colors text-center leading-tight">
                   {category.name}
                 </span>
               </Link>
